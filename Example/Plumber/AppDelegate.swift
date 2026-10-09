@@ -1,11 +1,3 @@
-//
-//  AppDelegate.swift
-//  Plumber
-//
-//  Created by plguyim on 09/30/2026.
-//  Copyright (c) 2026 plguyim. All rights reserved.
-//
-
 import UIKit
 
 @UIApplicationMain

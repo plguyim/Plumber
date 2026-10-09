@@ -4,10 +4,7 @@ platform :ios, '10.0'
 
 target 'Plumber_Example' do
   pod 'Plumber', :path => '../'
-
-  target 'Plumber_Tests' do
-    inherit! :search_paths
-
-    
-  end
+  
+  pod 'SnapKit'
+  
 end
