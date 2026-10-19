@@ -23,7 +23,7 @@ Plumber encapsulates the relationship between data and its target type. The view
 
 ## Usage
 
-### 1. Make a cell configurable
+### 1. Make a Cell Configurable and Register it
 
 Conform your cell to PlumberConfigurable and define its reuse identifer.
 
@@ -46,38 +46,51 @@ Conform your cell to PlumberConfigurable and define its reuse identifer.
         }
     }
 ```
+
 The sender provides access to the asscociated data and allows the cell to trigger registered events.
+
+
+Register the cell in your view controller.
+
+``` swift
+    tableView.register(
+        UserCell.self,
+        forCellReuseIdentifier: UserCell.reuseIdentifier
+    )
+    
+```
+
+Plumber uses the cell's reuse identifier to dequeue and configure the appropriate reuseable cell.
+
 
 ### 2. Create Plumber instances and Register events
 
 Asscociate each data item with its target type.
 
 ``` swift
-    let userPlumber = Plumber(
-            data: user,
-            cellClass: UserCell.self
-    ) { [unowned self] registrar in
+    let userPlumber = Plumber(data: user)
+    userPlumber.bind(UserCell.self)
+    
+    userPlumber.on(PlumberEvent.didSelect) { [weak self] plumber in
+        let user = plumber.data
+        // Handle the events here.
         
-        registrar.on(PlumberEvent.didSelect) { user in
-            // Handle the events here.
-
-        }
-        registrar.on(UserCell.Event.didTappedImageView) { user in
-            // Handle the event here.
-
-        }
     }
-
-    let orderPlumber = Plumber(
-            data: order,
-            cellClass: OrderCell.self
-    ) { [unowned self] registrar in
-
-        registrar.on(OrderCell.Event.didTappedPrimaryButton) { order in
-            // Handle the event here.
-
-        }
+    userPlumber.on(UserCell.Events.didSelectAvatar) { [weak self] plumber in
+        // Change the bound cell type.
+        plumber.bind(OtherUserCell.self)
+        self?.tableView?.reloadData()
     }
+    
+    let orderPlumber = Plumber(data: order)
+    orderPlumber.bind(OrderCell.self)
+    
+    orderPlumber.on(OrderCell.Events.didTappedPrimaryButton) { [weak self] plumber in
+        let order = plumber.data
+        // Handle the event here.
+
+    }
+    
 ```
 Each Plumber instance represents on data-and-target assocation.
 
@@ -88,7 +101,7 @@ Plumber provides built-in list events such as selection and deselection. Custom 
 Store Plumber instances in an array to determine the order of the items.
 
 ``` swift
-    var plumbers: [Plumber] = [
+    var plumbers: [any AnyPlumber] = [
         userPlumber,
         orderPlumber
     ]

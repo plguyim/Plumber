@@ -7,20 +7,20 @@ import Foundation
 /// to trigger events through 'send'.
 public struct PlumberSender<Data> {
     
-    internal var access: (any PipelineAccess<Data>)
+    internal var pipeline: Pipeline<Data>
     
-    internal init(access: some PipelineAccess<Data>) {
-        self.access = access
+    internal init(pipeline: Pipeline<Data>) {
+        self.pipeline = pipeline
     }
     
     public var data: Data {
-        access.data
+        pipeline.data
     }
     
     public func send<Event: Hashable>(
         _ event: Event,
         parameters: Any? = nil
     ) {
-        access.trigger(event, parameters: parameters)
+        pipeline.trigger(event, parameters: parameters)
     }
 }

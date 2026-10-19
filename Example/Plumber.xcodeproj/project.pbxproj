@@ -13,6 +13,7 @@
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		9A692300E982B4186610C51A /* Pods_Plumber_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0B28BDB80AA1C909461C1D7 /* Pods_Plumber_Example.framework */; };
+		C23C905130866BA8001CE597 /* AnimalCellTrailingAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23C905030866BA8001CE597 /* AnimalCellTrailingAvatar.swift */; };
 		C24D218F3077675F000ECD34 /* FlowerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24D218E3077675F000ECD34 /* FlowerCell.swift */; };
 		C24D21913077676A000ECD34 /* AnimalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24D21903077676A000ECD34 /* AnimalCell.swift */; };
 		C24D2194307767CE000ECD34 /* Flower.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24D2193307767CE000ECD34 /* Flower.swift */; };
@@ -31,6 +32,7 @@
 		607FACDC1AFB9204008FA782 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		607FACDF1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		88485F1F3B2AEEE381D41EC4 /* Pods-Plumber_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Plumber_Example.release.xcconfig"; path = "Target Support Files/Pods-Plumber_Example/Pods-Plumber_Example.release.xcconfig"; sourceTree = "<group>"; };
+		C23C905030866BA8001CE597 /* AnimalCellTrailingAvatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimalCellTrailingAvatar.swift; sourceTree = "<group>"; };
 		C24D218E3077675F000ECD34 /* FlowerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowerCell.swift; sourceTree = "<group>"; };
 		C24D21903077676A000ECD34 /* AnimalCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimalCell.swift; sourceTree = "<group>"; };
 		C24D2193307767CE000ECD34 /* Flower.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flower.swift; sourceTree = "<group>"; };
@@ -121,6 +123,7 @@
 			children = (
 				C24D218E3077675F000ECD34 /* FlowerCell.swift */,
 				C24D21903077676A000ECD34 /* AnimalCell.swift */,
+				C23C905030866BA8001CE597 /* AnimalCellTrailingAvatar.swift */,
 			);
 			name = Cell;
 			sourceTree = "<group>";
@@ -262,6 +265,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C23C905130866BA8001CE597 /* AnimalCellTrailingAvatar.swift in Sources */,
 				C24D21913077676A000ECD34 /* AnimalCell.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				C24D2198307772A2000ECD34 /* PresentedViewController.swift in Sources */,
@@ -405,7 +409,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -421,7 +425,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};

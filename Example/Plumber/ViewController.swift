@@ -5,7 +5,7 @@ import SnapKit
 class ViewController: UIViewController {
     
     weak var tableView: UITableView?
-    var plumbers:[Plumber] = []
+    var plumbers:[any AnyPlumber] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,47 +38,62 @@ class ViewController: UIViewController {
             AnimalCell.self,
             forCellReuseIdentifier: AnimalCell.reuseIdentifier
         )
+        
+        tableView.register(
+            AnimalCellTrailingAvatar.self,
+            forCellReuseIdentifier: AnimalCellTrailingAvatar.reuseIdentifier
+        )
     }
     
     func loadMockData() {
         let flowers = try! Flower.mock()
         let cats = try! Animal.mock()
         
-        for (i, flower) in flowers.enumerated() {
-            plumbers.append(
-                Plumber(
-                    data: flower,
-                    cellClass: FlowerCell.self,
-                    { [unowned self] registrar in
-                        registrar.on(PlumberEvent.didSelect) { flower in
-                            print("The row with \(flower.name) is selected.")
-                            let presentedVC = PresentedViewController()
-                            presentedVC.title = "It's belong to the Flower."
-                            self.present(presentedVC, animated: true)
-                        }
-                        registrar.on(FlowerCell.Events.didTappedImage) { flower in
-                            print("did tapped \(flower.localImageName)")
-                        }
-                    }
-                )
-            )
-            plumbers.append(
-                Plumber(
-                    data: cats[i],
-                    cellClass: AnimalCell.self,
-                    { [unowned self] registrar in
-                        registrar.on(PlumberEvent.didSelect) { cat in
-                            print("The row with \(cat.name) is selected.")
-                            let presentedVC = PresentedViewController()
-                            presentedVC.title = "It's belong to the Animal."
-                            self.present(presentedVC, animated: true)
-                        }
-                        registrar.on(AnimalCell.Events.didKittenGrowled) { cat in
-                            print("The Kidden Growled.")
-                        }
-                    }
-                )
-            )
+        for i in 0..<5 {
+            // add a flower plumber
+            let flowerPlumber = Plumber(data: flowers[i])
+            flowerPlumber.bind(FlowerCell.self)
+            
+            flowerPlumber.on(PlumberEvent.didSelect) { [unowned self] plumber in
+                print("Selected flower: \(plumber.data.name)")
+                
+                let presentedVC = PresentedViewController()
+                presentedVC.title = "Flower"
+                self.present(presentedVC, animated: true)
+            }
+            flowerPlumber.on(FlowerCell.Events.didTappedImage) { plumber in
+                print("did tapped \(plumber.data.localImageName)")
+            }
+            
+            plumbers.append(flowerPlumber)
+            
+            // add a animal plumber
+            let animalPlumber = Plumber(data: cats[i])
+            animalPlumber.bind(AnimalCell.self)
+            
+            animalPlumber.on(PlumberEvent.didSelect) { [unowned self] plumber in
+                print("Selected animal: \(plumber.data.name)")
+                
+                let presentedVC = PresentedViewController()
+                presentedVC.title = "Animal"
+                self.present(presentedVC, animated: true)
+            }
+            
+            animalPlumber.on(AnimalCell.Events.didSelectAnimal) {[unowned self] plumber in
+                // Change the bound cell type.
+                plumber.bind(AnimalCellTrailingAvatar.self)
+                
+                self.tableView?.reloadData()
+            }
+            
+            animalPlumber.on(AnimalCellTrailingAvatar.Events.didSelectAnimal) { [unowned self] plumber in
+                // Change the bound cell type.
+                plumber.bind(AnimalCell.self)
+                
+                self.tableView?.reloadData()
+            }
+            
+            plumbers.append(animalPlumber)
         }
     }
     

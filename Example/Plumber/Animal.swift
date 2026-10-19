@@ -5,6 +5,8 @@ struct Animal: Codable {
     var name: String
     var localImageName: String
     
+    var isTrailing = false
+    
     enum CodingKeys: String, CodingKey {
         case name
         case localImageName = "image"

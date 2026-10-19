@@ -7,7 +7,7 @@ class AnimalCell: UITableViewCell {
     var nameLabel: UILabel?
     var sender: PlumberSender<Animal>?
     
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         contentView.backgroundColor = .white
@@ -54,14 +54,14 @@ class AnimalCell: UITableViewCell {
     }
     
     @objc func imageTapped() {
-        self.sender?.send(AnimalCell.Events.didKittenGrowled)
+        self.sender?.send(AnimalCell.Events.didSelectAnimal)
     }
 }
 
 extension AnimalCell: PlumberConfigurable {
     
     enum Events {
-        case didKittenGrowled
+        case didSelectAnimal
     }
     
     static var reuseIdentifier: String {

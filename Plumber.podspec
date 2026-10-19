@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'Plumber'
-  s.version          = '0.1.0'
+  s.version          = '0.2.0'
   s.summary          = 'A lightweight UIKit framework for binding data, targets, and events.'
 
   s.description      = <<-DESC
@@ -18,5 +18,6 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '8.0'
 
   s.source_files = 'Source/*.swift'
+  s.swift_version = '5.7'
   
 end

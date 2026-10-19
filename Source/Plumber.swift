@@ -1,33 +1,128 @@
-import Foundation
+import UIKit
 
-/// A type-erased wrapper around a pipeline.
+/// Deffines a type-erased interface for plumbers with different data types.
 ///
-/// Plumber allows piplines with different data and target types to be
-/// stored together in single array. View Controllers can use an array
-/// of plumbers to define the order of targets, configure cells, and
-/// register related events.
-public class Plumber {
+/// This protocol allows plumbers with different data types to be used
+/// through a shared interface without exposing their underlying data types.
+public protocol AnyPlumber {
     
-    internal var access: any PipelineAccess
+    func trigger(
+        _ event: some Hashable
+    )
     
-    var data: Any {
-        access.data
+    func trigger(
+        _ event: some Hashable,
+        parameters: Any?
+    )
+    
+    func reusableCell(
+        from tableView: UITableView,
+        at indexPath: IndexPath
+    ) -> UITableViewCell
+    
+    func reusableCell(
+        from collectionView: UICollectionView,
+        at indexPath: IndexPath
+    ) -> UICollectionViewCell
+    
+}
+
+/// Represents a plumber that manages cell binding and event handling.
+///
+/// A plumber associates data with a cell type and provides access to
+/// the binding and event pipeline. Use 'bind' to associate a cell type
+/// with the plumber. The binding can be changed in response to events,
+/// allowing the plumber to use different cell types as needed. Plumbers
+/// with different data types can be stored through the type-erased
+/// 'AnyPlumber' interface.
+public class Plumber<Data> {
+    
+    internal lazy var pipeline = Pipeline(plumber: self)
+    internal var binding: (any BindingAccess)?
+    
+    public var data: Data
+    
+    public init(data: Data) {
+        self.data = data
     }
     
-    public init<Data, Cell>(
-        data: Data,
-        cellClass: Cell.Type,
-        _ closure: (_ registrar: PlumberRegistrar<Data>) -> Void
-    ) where Cell: AnyObject & PlumberConfigurable,
-            Cell.Data == Data
+    /// Binds a cell type to the plumber and allows the binding
+    /// to be changed in response to events.
+    public func bind<Cell>(
+        _ cellClass: Cell.Type
+    )
+    where Cell: AnyObject & PlumberConfigurable,
+          Cell.Data == Data
     {
-        let pipeline = Pipeline(data: data, cellClass: cellClass)
-        closure(PlumberRegistrar(access: pipeline))
-        self.access = pipeline
+        binding = Binding(pipeline: pipeline, cellClass: cellClass)
+    }
+    
+    public func on<Event: Hashable>(
+        _ event: Event,
+        _ action: @escaping (_ plumber: Plumber<Data>) -> Void
+    ) {
+        pipeline.on(event) { plumber, _ in
+            action(plumber)
+        }
+    }
+    
+    public func on<Event: Hashable>(
+        _ event: Event,
+        _ action: @escaping (_ plumber: Plumber<Data>, _ parameters: Any?) -> Void
+    ) {
+        pipeline.on(event, action: action)
     }
         
-    public func trigger<Event: Hashable>(_ event: Event, parameters: Any? = nil) {
-        access.trigger(event, parameters: parameters)
+}
+
+extension Plumber: AnyPlumber {
+    
+    public func trigger(
+        _ event: some Hashable
+    ) {
+        trigger(event, parameters: nil)
+    }
+    
+    public func trigger(_ event: some Hashable, parameters: Any?) {
+        pipeline.trigger(event, parameters: parameters)
+    }
+    
+    public func reusableCell(
+        from tableView: UITableView,
+        at indexPath: IndexPath
+    ) -> UITableViewCell
+    {
+        guard let binding = binding else {
+            assertionFailure("Call bind(_:) on Plumber before requesting a cell.")
+            return UITableViewCell()
+        }
+        
+        let cell = tableView.dequeueReusableCell(
+            withIdentifier: binding.reuseIdentifier,
+            for: indexPath
+        )
+        binding.bind(cell)
+        
+        return cell
+    }
+    
+    public func reusableCell(
+        from collectionView: UICollectionView,
+        at indexPath: IndexPath
+    ) -> UICollectionViewCell
+    {
+        guard let binding = binding else {
+            assertionFailure("Call bind(_:) on Plumber before requesting a cell.")
+            return UICollectionViewCell()
+        }
+        
+        let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: binding.reuseIdentifier,
+            for: indexPath
+        )
+        binding.bind(cell)
+        
+        return cell
     }
     
 }
